@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.isNull;
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.nonNull;
 
 /**
@@ -20,28 +19,15 @@ import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.n
 public class ProductsRemoteDataSource implements ProductsDataSource {
 
     private static final int SERVICE_LATENCY_IN_MILLIS = 3000;
-    private final static Object LOCK = new Object();
-    private static ProductsRemoteDataSource INSTANCE;
     private final Map<String, Product> productsServiceData = new LinkedHashMap<>();
     private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
-    private ProductsRemoteDataSource() {
+    public ProductsRemoteDataSource() {
         addProduct("Milk", "Without lactose", "3", "bottles");
         addProduct("Bread", "Whole grain", "5", null);
         addProduct("Orange juice", "Fresh! Buy fresh!", "3", "litres");
         addProduct("Spices for barbecue", null, null, null);
         addProduct("Flour", "Powdery", "3.5", "kg");
-    }
-
-    public static ProductsRemoteDataSource getInstance() {
-        if (isNull(INSTANCE)) {
-            synchronized (LOCK) {
-                if (isNull(INSTANCE)) {
-                    INSTANCE = new ProductsRemoteDataSource();
-                }
-            }
-        }
-        return INSTANCE;
     }
 
     private void addProduct(String title, String description, String quantity, String unit) {

@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tomtre.android.architecture.shoppinglistmvp.R;
-import com.tomtre.android.architecture.shoppinglistmvp.data.Injection;
+import com.tomtre.android.architecture.shoppinglistmvp.di.DependencyInjector;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +49,9 @@ public class AddEditProductFragment extends Fragment implements AddEditProductCo
     LinearLayout lContainerProduct;
 
     Unbinder unbinder;
-    private AddEditProductContract.Presenter presenter;
+
+    @Inject
+    AddEditProductContract.Presenter presenter;
 
     public static AddEditProductFragment newInstance(@Nullable String productId) {
         AddEditProductFragment addEditProductFragment = new AddEditProductFragment();
@@ -68,11 +72,9 @@ public class AddEditProductFragment extends Fragment implements AddEditProductCo
 
         String productId = findProductId();
 
-        presenter = new AddEditProductPresenter(
-                productId,
-                Injection.provideProductsRepository(getContext()),
-                loadDataFromRepository
-        );
+        DependencyInjector.appComponent()
+                .plusAddEditProductFragmentComponent(new AddEditProductFragmentModule(productId, loadDataFromRepository))
+                .inject(this);
     }
 
     @Nullable

@@ -8,7 +8,6 @@ import com.tomtre.android.architecture.shoppinglistmvp.data.source.ProductsDataS
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.repository.callback.ProductListRemoteCallback;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.repository.callback.ProductRemoteCallback;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,12 +52,7 @@ public class ProductsRepositoryImplTest {
 
     @Before
     public void setUp() {
-        productsRepositoryImpl = ProductsRepositoryImpl.getInstance(productsCache, productsRemoteDataSource, productsLocalDataSource);
-    }
-
-    @After
-    public void cleanUp() {
-        ProductsRepositoryImpl.clearInstance();
+        productsRepositoryImpl = new ProductsRepositoryImpl(productsCache, productsRemoteDataSource, productsLocalDataSource);
     }
 
     @Test

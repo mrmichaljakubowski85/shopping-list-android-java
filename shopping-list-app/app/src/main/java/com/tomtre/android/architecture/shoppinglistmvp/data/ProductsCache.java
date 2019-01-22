@@ -9,29 +9,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.isNull;
 
 
 @SuppressWarnings("Guava")
 public class ProductsCache {
 
-    private static final Object LOCK = new Object();
-    private static ProductsCache INSTANCE;
     private final Map<String, Product> products = new LinkedHashMap<>();
-
-    private ProductsCache() {
-    }
-
-    public static ProductsCache getInstance() {
-        if (isNull(INSTANCE)) {
-            synchronized (LOCK) {
-                if (isNull(INSTANCE)) {
-                    INSTANCE = new ProductsCache();
-                }
-            }
-        }
-        return INSTANCE;
-    }
 
     public Collection<Product> getProducts() {
         return products.values();

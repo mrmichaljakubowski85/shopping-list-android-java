@@ -62,12 +62,8 @@ public class ProductsLocalDataSourceTest {
 
         ProductsDao productsDao = productsDatabase.productsDao();
 
-        // Make sure we're not keeping a reference to the wrong instance.
-        ProductsLocalDataSource.clearInstance();
-        AppExecutors.clearInstance();
-
         Executor executor = Runnable::run;
-        productsLocalDataSource = ProductsLocalDataSource.getInstance(
+        productsLocalDataSource = new ProductsLocalDataSource(
                 new AppExecutors(executor, executor),
                 productsDao);
     }
@@ -75,8 +71,6 @@ public class ProductsLocalDataSourceTest {
     @After
     public void cleanUp() {
         productsDatabase.close();
-        ProductsLocalDataSource.clearInstance();
-        AppExecutors.clearInstance();
     }
 
     @Test

@@ -1,7 +1,5 @@
 package com.tomtre.android.architecture.shoppinglistmvp.data.source.local;
 
-import android.support.annotation.VisibleForTesting;
-
 import com.tomtre.android.architecture.shoppinglistmvp.data.Product;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.ProductsDataSource;
 import com.tomtre.android.architecture.shoppinglistmvp.util.AppExecutors;
@@ -13,25 +11,12 @@ import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.i
 
 public class ProductsLocalDataSource implements ProductsDataSource {
 
-    private static final Object LOCK = new Object();
-    private static ProductsLocalDataSource INSTANCE;
     private final AppExecutors appExecutors;
     private final ProductsDao productsDao;
 
-    private ProductsLocalDataSource(AppExecutors appExecutors, ProductsDao productsDao) {
+    public ProductsLocalDataSource(AppExecutors appExecutors, ProductsDao productsDao) {
         this.appExecutors = appExecutors;
         this.productsDao = productsDao;
-    }
-
-    public static ProductsLocalDataSource getInstance(AppExecutors appExecutors, ProductsDao productsDao) {
-        if (isNull(INSTANCE)) {
-            synchronized (LOCK) {
-                if (isNull(INSTANCE)) {
-                    INSTANCE = new ProductsLocalDataSource(appExecutors, productsDao);
-                }
-            }
-        }
-        return INSTANCE;
     }
 
     @Override
@@ -112,8 +97,4 @@ public class ProductsLocalDataSource implements ProductsDataSource {
         appExecutors.getDiskIOExecutor().execute(runnable);
     }
 
-    @VisibleForTesting
-    static void clearInstance() {
-        INSTANCE = null;
-    }
 }

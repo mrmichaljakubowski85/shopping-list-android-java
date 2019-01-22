@@ -8,28 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.isNull;
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.nonNull;
 
 public class FakeProductsRemoteDataSource implements ProductsDataSource {
 
-    private static final Object LOCK = new Object();
-    private static FakeProductsRemoteDataSource INSTANCE;
     private final Map<String, Product> productsServiceData = new LinkedHashMap<>();
-
-    private FakeProductsRemoteDataSource() {
-    }
-
-    public static FakeProductsRemoteDataSource getInstance() {
-        if (isNull(INSTANCE)) {
-            synchronized (LOCK) {
-                if (isNull(INSTANCE)) {
-                    INSTANCE = new FakeProductsRemoteDataSource();
-                }
-            }
-        }
-        return INSTANCE;
-    }
 
     @Override
     public void getProducts(final LoadProductListCallback loadProductListCallback) {

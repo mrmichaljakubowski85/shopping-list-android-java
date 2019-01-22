@@ -30,7 +30,7 @@ public class ProductsCacheTest {
 
     @Before
     public void setUp() {
-        productsCache = ProductsCache.getInstance();
+        productsCache = new ProductsCache();
     }
 
 
