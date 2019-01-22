@@ -4,12 +4,18 @@ import android.support.annotation.Nullable;
 
 import com.tomtre.android.architecture.shoppinglistmvp.data.Product;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.repository.ProductsRepository;
+import com.tomtre.android.architecture.shoppinglistmvp.di.FragmentScope;
 import com.tomtre.android.architecture.shoppinglistmvp.util.EspressoIdlingResource;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.isNull;
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.nonNull;
 
+@FragmentScope
 public class AddEditProductPresenter implements AddEditProductContract.Presenter {
 
     @Nullable
@@ -19,12 +25,20 @@ public class AddEditProductPresenter implements AddEditProductContract.Presenter
 
     //decides if we need to refresh data (configuration change, background/foreground etc)
     private boolean dataMissing;
+    //This is provided lazily because its value is determined in the Fragment's onCreate.
+    //By calling it in start(), the value is guaranteed to be set.
+    private Lazy<Boolean> dataMissingLazy;
+
+
     private boolean productCheckedState = false;
 
-    AddEditProductPresenter(@Nullable String productId, ProductsRepository productsRepository, boolean loadDataFromRepository) {
+    @Inject
+    AddEditProductPresenter(@Nullable String productId,
+                            ProductsRepository productsRepository,
+                            Lazy<Boolean> loadDataFromRepositoryLazy) {
         this.productId = productId;
         this.productsRepository = checkNotNull(productsRepository);
-        dataMissing = loadDataFromRepository;
+        dataMissingLazy = loadDataFromRepositoryLazy;
     }
 
     @Override
@@ -34,6 +48,7 @@ public class AddEditProductPresenter implements AddEditProductContract.Presenter
 
     @Override
     public void start() {
+        dataMissing = dataMissingLazy.get();
         if (!isNewProduct() && dataMissing)
             loadProduct();
     }

@@ -1,19 +1,20 @@
 package com.tomtre.android.architecture.shoppinglistmvp.base;
 
-import android.app.Application;
 import android.os.StrictMode;
 import android.support.annotation.VisibleForTesting;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.tomtre.android.architecture.shoppinglistmvp.BuildConfig;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.repository.ProductsRepository;
-import com.tomtre.android.architecture.shoppinglistmvp.di.DependencyInjector;
+import com.tomtre.android.architecture.shoppinglistmvp.di.DaggerAppComponent;
 
 import javax.inject.Inject;
 
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 import timber.log.Timber;
 
-public class ShoppingListApp extends Application {
+public class ShoppingListApp extends DaggerApplication {
 
     //we need it for UI tests
     @Inject
@@ -37,8 +38,13 @@ public class ShoppingListApp extends Application {
         if (BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
 
-        initDependencyInjector();
-        DependencyInjector.appComponent().inject(this);
+    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder()
+                .application(this)
+                .build();
     }
 
     private void enableStrictMode() {
@@ -51,13 +57,10 @@ public class ShoppingListApp extends Application {
         }
     }
 
-    private void initDependencyInjector() {
-        DependencyInjector.initialize(this);
-    }
-
     //we need it for UI tests
     @VisibleForTesting
     public ProductsRepository getProductsRepository() {
         return productsRepository;
     }
+
 }

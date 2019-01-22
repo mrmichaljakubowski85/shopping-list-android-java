@@ -1,26 +1,27 @@
 package com.tomtre.android.architecture.shoppinglistmvp.di;
 
+import android.app.Application;
+
 import com.tomtre.android.architecture.shoppinglistmvp.base.ShoppingListApp;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.ProductsRepositoryModule;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.addeditproduct.AddEditProductFragmentComponent;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.addeditproduct.AddEditProductFragmentModule;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.productdetail.ProductDetailFragmentComponent;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.productdetail.ProductDetailFragmentModule;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.products.ProductsFragmentComponent;
-import com.tomtre.android.architecture.shoppinglistmvp.ui.products.ProductsFragmentModule;
 
+import dagger.BindsInstance;
 import dagger.Component;
+import dagger.android.AndroidInjector;
+import dagger.android.support.AndroidSupportInjectionModule;
 
 @AppScope
-@Component(modules = {AppModule.class, ProductsRepositoryModule.class})
-public interface AppComponent {
+@Component(modules = {AppModule.class,
+        ProductsRepositoryModule.class,
+        FragmentBindingModule.class,
+        AndroidSupportInjectionModule.class})
+public interface AppComponent extends AndroidInjector<ShoppingListApp> {
 
-    ProductsFragmentComponent plusProductsFragmentComponent(ProductsFragmentModule productsFragmentModule);
+    @Component.Builder
+    interface Builder {
+        AppComponent build();
 
-    ProductDetailFragmentComponent plusProductDetailFragmentComponent(ProductDetailFragmentModule productDetailFragmentModule);
-
-    AddEditProductFragmentComponent plusAddEditProductFragmentComponent(AddEditProductFragmentModule addEditProductFragmentModule);
-
-    void inject(ShoppingListApp app);
-
+        @BindsInstance
+        Builder application(Application application);
+    }
 }

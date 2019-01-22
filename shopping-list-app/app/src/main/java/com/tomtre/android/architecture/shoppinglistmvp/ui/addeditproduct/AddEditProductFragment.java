@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tomtre.android.architecture.shoppinglistmvp.R;
-import com.tomtre.android.architecture.shoppinglistmvp.di.DependencyInjector;
+import com.tomtre.android.architecture.shoppinglistmvp.di.FragmentScope;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.support.DaggerFragment;
 
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.nonNull;
 
-public class AddEditProductFragment extends Fragment implements AddEditProductContract.View {
+@FragmentScope
+public class AddEditProductFragment extends DaggerFragment implements AddEditProductContract.View {
 
     public static final String KEY_EDIT_PRODUCT_ID = "KEY_EDIT_PRODUCT_ID";
     private static final String KEY_LOAD_DATA_FROM_REPOSITORY = "KEY_LOAD_DATA_FROM_REPOSITORY";
@@ -49,9 +50,9 @@ public class AddEditProductFragment extends Fragment implements AddEditProductCo
     LinearLayout lContainerProduct;
 
     Unbinder unbinder;
-
     @Inject
     AddEditProductContract.Presenter presenter;
+    private boolean loadDataFromRepository;
 
     public static AddEditProductFragment newInstance(@Nullable String productId) {
         AddEditProductFragment addEditProductFragment = new AddEditProductFragment();
@@ -68,21 +69,8 @@ public class AddEditProductFragment extends Fragment implements AddEditProductCo
         super.onCreate(savedInstanceState);
 
         //decides if we need to refresh data (configuration change, background/foreground etc)
-        boolean loadDataFromRepository = shouldLoadDataFromRepository(savedInstanceState);
+        loadDataFromRepository = shouldLoadDataFromRepository(savedInstanceState);
 
-        String productId = findProductId();
-
-        DependencyInjector.appComponent()
-                .plusAddEditProductFragmentComponent(new AddEditProductFragmentModule(productId, loadDataFromRepository))
-                .inject(this);
-    }
-
-    @Nullable
-    private String findProductId() {
-        if (nonNull(getArguments())) {
-            return getArguments().getString(KEY_EDIT_PRODUCT_ID);
-        }
-        return null;
     }
 
     private boolean shouldLoadDataFromRepository(@Nullable Bundle savedInstanceState) {
@@ -179,11 +167,13 @@ public class AddEditProductFragment extends Fragment implements AddEditProductCo
         tvNoProductMessage.setVisibility(View.VISIBLE);
     }
 
-
     @Override
     public boolean isActive() {
         return isAdded();
     }
 
+    public boolean isLoadDataFromRepository() {
+        return loadDataFromRepository;
+    }
 
 }

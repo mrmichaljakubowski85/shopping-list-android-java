@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tomtre.android.architecture.shoppinglistmvp.R;
-import com.tomtre.android.architecture.shoppinglistmvp.di.DependencyInjector;
 import com.tomtre.android.architecture.shoppinglistmvp.ui.addeditproduct.AddEditProductActivity;
 import com.tomtre.android.architecture.shoppinglistmvp.util.RequestCodes;
 
@@ -29,9 +27,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.support.DaggerFragment;
 
 
-public class ProductDetailFragment extends Fragment implements ProductDetailContract.View {
+public class ProductDetailFragment extends DaggerFragment implements ProductDetailContract.View {
 
     public static final String KEY_PRODUCT_ID = "KEY_PRODUCT_ID";
 
@@ -71,18 +70,6 @@ public class ProductDetailFragment extends Fragment implements ProductDetailCont
         args.putString(KEY_PRODUCT_ID, productId);
         productDetailFragment.setArguments(args);
         return productDetailFragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //noinspection ConstantConditions
-        String productId = getArguments().getString(KEY_PRODUCT_ID);
-
-        DependencyInjector.appComponent()
-                .plusProductDetailFragmentComponent(new ProductDetailFragmentModule(productId))
-                .inject(this);
     }
 
     @Override

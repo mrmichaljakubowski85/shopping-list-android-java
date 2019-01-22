@@ -8,21 +8,26 @@ import com.google.common.collect.ImmutableList;
 import com.tomtre.android.architecture.shoppinglistmvp.data.Product;
 import com.tomtre.android.architecture.shoppinglistmvp.data.ProductComparator;
 import com.tomtre.android.architecture.shoppinglistmvp.data.source.repository.ProductsRepository;
+import com.tomtre.android.architecture.shoppinglistmvp.di.FragmentScope;
 import com.tomtre.android.architecture.shoppinglistmvp.util.EspressoIdlingResource;
 import com.tomtre.android.architecture.shoppinglistmvp.util.RequestCodes;
 
 import java.text.Collator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.tomtre.android.architecture.shoppinglistmvp.util.CommonUtils.nonNull;
 
+@FragmentScope
 public class ProductsPresenter implements ProductsContract.Presenter {
 
     private final ProductsRepository productsRepository;
     private ProductsContract.View productsView;
     private ProductsFilterType productsFilterType = ProductsFilterType.ALL_PRODUCTS;
 
+    @Inject
     ProductsPresenter(@NonNull ProductsRepository productsRepository) {
         this.productsRepository = checkNotNull(productsRepository);
     }
